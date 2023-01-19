@@ -10,6 +10,7 @@ RUN python3 /spirex/download_models.py
 RUN chmod +x /spirex/run_hybrid_deberta.py
 RUN chmod +x /spirex/run_hybrid_roberta.py
 RUN chmod -R 777 /spirex/cache/
+RUN mkdir /.cache
 RUN chmod -R 777 /.cache/
 ENTRYPOINT [ "/spirex/run_hybrid_deberta.py" ]
 
