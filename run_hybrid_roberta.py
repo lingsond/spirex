@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/opt/conda/bin/python3
 import argparse
 import json
 from transformers import pipeline, T5Tokenizer, T5ForConditionalGeneration, \
