@@ -8,6 +8,8 @@ spec:
     spec:
       priorityClassName: research-med
       restartPolicy: "Never"
+      imagePullSecrets:
+        - name: lsx-registry
       containers:
         - name: spirex
           image: ls6-stud-registry.informatik.uni-wuerzburg.de/studwangsadirdja-spirex:0.0.1
