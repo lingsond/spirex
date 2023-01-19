@@ -27,9 +27,9 @@ RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 
 # Copying the scripts
-COPY run_hybrid_deberta.py run_hybrid_roberta.py input.jsonl/
-RUN chmod +x run_hybrid_deberta.py
-RUN chmod +x run_hybrid_roberta.py
+COPY run_hybrid_deberta.py run_hybrid_roberta.py input.jsonl /
+RUN chmod +x /run_hybrid_deberta.py
+RUN chmod +x /run_hybrid_roberta.py
 ENTRYPOINT [ "/run_hybrid_deberta.py" ]
 
 # NAME=ls6-stud-registry.informatik.uni-wuerzburg.de/studwangsadirdja-spirex:0.0.1
