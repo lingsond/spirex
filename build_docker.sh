@@ -6,10 +6,10 @@ set -e
 # chmod +x docker_run.sh
 # ./docker_run.sh
 
-export NAME="ls6-stud-registry.informatik.uni-wuerzburg.de/studwangsadirdja-spirex:0.0.1"
+export NAME="ls6-stud-registry.informatik.uni-wuerzburg.de/studwangsadirdja-spirex:0.0.2"
 
 echo "Building the container..."
-fastbuildah bud -t ${NAME} --format docker -f Dockerfile .
+fastbuildah bud -t ${NAME} --format docker -f Dockerfile.new .
 echo "Login to container registry. Username: stud, Password: studregistry"
 fastbuildah login ls6-stud-registry.informatik.uni-wuerzburg.de
 echo "Pushing container to registry..."
