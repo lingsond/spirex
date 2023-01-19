@@ -21,6 +21,7 @@ RUN apt-get update \
 RUN ln -sf /usr/bin/python3.9 /usr/bin/python3
 
 # Install requirements
+WORKDIR /
 COPY requirements.txt /
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
