@@ -23,8 +23,9 @@ def para_question(question_text: str):
         input_ids = PTOKENIZER(new_text, return_tensors="pt").input_ids
         outputs = PMODEL.generate(input_ids, max_new_tokens=50)
         question = PTOKENIZER.decode(outputs[0])
-        question = question.removeprefix('<pad> ')
-        question = question.removesuffix('</s>')
+        # question = question.removeprefix('<pad> ')
+        question = question[6:-4]
+        #question = question.removesuffix('</s>')
 
         # Check BERTscore
         bscore = BERTSCORE.compute(
@@ -80,8 +81,9 @@ def predict(inputs):
             else:
                 outputs = PMODEL.generate(input_ids, max_new_tokens=50)
                 output_text = PTOKENIZER.decode(outputs[0])
-                output_text = output_text.removeprefix('<pad> ')
-                answer = output_text.removesuffix('</s>')
+                # output_text = output_text.removeprefix('<pad> ')
+                # answer = output_text.removesuffix('</s>')
+                answer = output_text[6:-4]
         infer = {'uuid': uuid, 'spoiler': answer, 'spoilerType': tags}
         predictions.append(infer)
     return predictions
