@@ -1,5 +1,9 @@
 FROM pytorch/pytorch:1.12.0-cuda11.3-cudnn8-runtime
 
+ENV PYTHONUNBUFFERED=1
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Europe/Berlin
+
 # Install Python3.9
 RUN apt-get update \
   && apt-get install -y software-properties-common \
