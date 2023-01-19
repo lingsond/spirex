@@ -24,6 +24,7 @@ spec:
           #command: [ "/bin/bash", "-c", "--" ]
           #args: [ "while true; do sleep 30; done;" ]
           command:
+            - python3
             - /run_hybrid_deberta.py
             - --input
             - input.jsonl
