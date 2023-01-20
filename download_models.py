@@ -1,5 +1,8 @@
-from transformers import pipeline, T5Tokenizer, T5ForConditionalGeneration, \
-    AutoTokenizer, AutoModelForQuestionAnswering
+from transformers import (
+    T5Tokenizer, T5ForConditionalGeneration,
+    AutoTokenizer, AutoModelForQuestionAnswering,
+    AutoModelForMaskedLM
+)
 from evaluate import load
 
 
@@ -13,5 +16,9 @@ if __name__ == '__main__':
     for model in QA_MODEL:
         QTOKENIZER = AutoTokenizer.from_pretrained(model, cache_dir="/spirex/cache")
         qmodel = AutoModelForQuestionAnswering.from_pretrained(model, cache_dir="/spirex/cache")
+    SCORE_MODEL = ['distilbert-base-uncased']
+    for model in SCORE_MODEL:
+        STOKENIZER = AutoTokenizer.from_pretrained(model, cache_dir="/.cache/huggingface/hub/")
+        smodel = AutoModelForMaskedLM.from_pretrained(model, cache_dir="/spirex/cache")
     # QMODEL = pipeline("question-answering", model=qmodel, tokenizer=QTOKENIZER)
     BERTSCORE = load("bertscore", cache_dir="/spirex/cache")
