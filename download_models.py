@@ -22,3 +22,7 @@ if __name__ == '__main__':
         smodel = AutoModelForMaskedLM.from_pretrained(model, cache_dir="/spirex/cache")
     # QMODEL = pipeline("question-answering", model=qmodel, tokenizer=QTOKENIZER)
     BERTSCORE = load("bertscore", cache_dir="/spirex/cache")
+    bscore = BERTSCORE.compute(
+        predictions=["Annakin Skywalker"], references=["Darth Vader"],
+        model_type="distilbert-base-uncased"
+    )
