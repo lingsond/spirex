@@ -3,7 +3,7 @@ import argparse
 import json
 from transformers import pipeline, T5Tokenizer, T5ForConditionalGeneration, \
     AutoTokenizer, AutoModelForQuestionAnswering
-from evaluate import load
+# from evaluate import load
 
 
 def parse_args():

@@ -9,11 +9,12 @@ COPY run_hybrid_deberta.py run_hybrid_roberta.py run_prompt.py input.jsonl /spir
 COPY download_models.py /spirex/
 RUN python3 /spirex/download_models.py
 
-RUN chmod +x /spirex/run_hybrid_deberta.py
-RUN chmod +x /spirex/run_hybrid_roberta.py
+RUN chmod +x /spirex/new_hybrid_deberta.py
+RUN chmod +x /spirex/new_hybrid_roberta.py
+RUN chmod +x /spirex/run_prompt.py
 RUN chmod -R 777 /spirex/cache/
 # RUN mkdir /.cache
-RUN chmod -R 777 /.cache/
+# RUN chmod -R 777 /.cache/
 
 ENTRYPOINT [ "/spirex/run_hybrid_deberta.py" ]
 
