@@ -9,6 +9,7 @@ COPY run_hybrid_deberta.py run_hybrid_roberta.py run_prompt.py input.jsonl /spir
 COPY download_models.py /spirex/
 RUN python3 /spirex/download_models.py
 
+COPY new_hybrid_deberta.py new_hybrid_roberta.py /spirex/
 RUN chmod +x /spirex/new_hybrid_deberta.py
 RUN chmod +x /spirex/new_hybrid_roberta.py
 RUN chmod +x /spirex/run_prompt.py
