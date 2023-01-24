@@ -74,8 +74,8 @@ def run_inference(input_file, output_file):
 if __name__ == '__main__':
     args = parse_args()
 
-    # CACHE_DIR = "/spirex/cache/"
-    CACHE_DIR = "./cache"
+    CACHE_DIR = "/spirex/cache/"
+    # CACHE_DIR = "./cache"
 
     # Model Initialization
     PROMPT_MODEL = 'google/flan-t5-large'
