@@ -10,13 +10,19 @@ COPY download_models.py /spirex/
 RUN python3 /spirex/download_models.py
 
 COPY new_hybrid_deberta.py new_hybrid_roberta.py /spirex/
-RUN chmod +x /spirex/new_hybrid_deberta.py
-RUN chmod +x /spirex/new_hybrid_roberta.py
-RUN chmod +x /spirex/run_prompt.py
-RUN chmod -R 777 /spirex/cache/
+COPY run_qa_no_para_deberta.py run_qa_no_para_roberta.py /spirex/
+COPY run_prompt_only_no_para.py /spirex/
+# RUN chmod +x /spirex/new_hybrid_deberta.py
+# RUN chmod +x /spirex/new_hybrid_roberta.py
+# RUN chmod +x /spirex/run_qa_no_para_deberta.py
+# RUN chmod +x /spirex/run_qa_no_para_roberta.py
+# RUN chmod +x /spirex/run_prompt_only_no_para.py
+# RUN chmod +x /spirex/run_prompt.py
+RUN chmod -R 777 /spirex/
 # RUN mkdir /.cache
 # RUN chmod -R 777 /.cache/
 
 ENTRYPOINT [ "/spirex/run_hybrid_deberta.py" ]
 
 # NAME=ls6-stud-registry.informatik.uni-wuerzburg.de/studwangsadirdja-spirex:0.0.2
+# webis...:spirex:0.0.3
