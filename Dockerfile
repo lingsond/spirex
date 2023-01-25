@@ -12,6 +12,7 @@ RUN python3 /spirex/download_models.py
 COPY new_hybrid_deberta.py new_hybrid_roberta.py /spirex/
 COPY run_qa_no_para_deberta.py run_qa_no_para_roberta.py /spirex/
 COPY run_prompt_only_no_para.py /spirex/
+COPY run_qa_para_question_deberta.py run_qa_para_question_roberta.py /spirex/
 # RUN chmod +x /spirex/new_hybrid_deberta.py
 # RUN chmod +x /spirex/new_hybrid_roberta.py
 # RUN chmod +x /spirex/run_qa_no_para_deberta.py
