@@ -14,6 +14,8 @@ COPY run_qa_no_para_deberta.py run_qa_no_para_roberta.py /spirex/
 COPY run_prompt_only_no_para.py /spirex/
 COPY run_qa_para_question_deberta.py run_qa_para_question_roberta.py /spirex/
 COPY run_prompt_only_para_question.py /spirex/
+COPY final_hybrid_deberta.py /spirex/
+COPY final_hybrid_roberta.py /spirex/
 # RUN chmod +x /spirex/new_hybrid_deberta.py
 # RUN chmod +x /spirex/new_hybrid_roberta.py
 # RUN chmod +x /spirex/run_qa_no_para_deberta.py
@@ -24,7 +26,7 @@ RUN chmod -R 777 /spirex/
 # RUN mkdir /.cache
 # RUN chmod -R 777 /.cache/
 
-ENTRYPOINT [ "/spirex/run_hybrid_deberta.py" ]
+ENTRYPOINT [ "/spirex/final_hybrid_deberta.py" ]
 
 # NAME=ls6-stud-registry.informatik.uni-wuerzburg.de/studwangsadirdja-spirex:0.0.2
 # webis...:spirex:0.0.3
