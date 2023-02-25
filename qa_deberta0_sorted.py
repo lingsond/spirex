@@ -117,5 +117,5 @@ if __name__ == '__main__':
     # BERTSCORE = load("bertscore", cache_dir="/spirex/cache/")
 
     ver = 0
-    use_sort = False
+    use_sort = True
     run_inference(args.input, args.output, ver, use_sort)

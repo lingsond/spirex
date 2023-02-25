@@ -24,7 +24,7 @@ def para_question(question_text: str, version: int):
             new_text = 'Change the headline to question form. Headline: ' + question_text
         else:
             new_text = f'Rephrase as a question: {question_text}\nquestion: '
-        input_ids = PTOKENIZER(new_text, return_tensors="pt").input_ids
+        input_ids = PTOKENIZER(new_text, return_tensors="pt").input_ids.cuda()
         outputs = PMODEL.generate(input_ids, max_new_tokens=50)
         question = PTOKENIZER.decode(outputs[0])
         # question = question.removeprefix('<pad> ')
@@ -56,7 +56,7 @@ def get_qa(question_text, content, ptag):
     return ans['answer']
 
 
-def predict(inputs, vers):
+def predict(inputs, vers, reorder=False):
     predictions = []
     for item in inputs:
         uuid = item['uuid']
@@ -69,7 +69,18 @@ def predict(inputs, vers):
             context_list.extend(paragraphs)
         else:
             context_list = paragraphs
-        context_str = '\n'.join(context_list)
+        if reorder:
+            context_embeddings = SIM_EMBEDDER.encode(context_list, convert_to_tensor=True)
+            question_embedding = SIM_EMBEDDER.encode(question_orig, convert_to_tensor=True)
+            top_k = len(context_list)
+            hits = util.semantic_search(question_embedding, context_embeddings, top_k=top_k)
+            hits = hits[0]
+            new_corpus = []
+            for hit in hits:
+                new_corpus.append(context_list[hit['corpus_id']])
+        else:
+            new_corpus = context_list
+        context_str = '\n'.join(new_corpus)
         question_para = para_question(question_orig, vers)
 
         answer = get_qa(question_para, context_str, tags)
@@ -79,9 +90,9 @@ def predict(inputs, vers):
     return predictions
 
 
-def run_inference(input_file, output_file, version):
+def run_inference(input_file, output_file, version, reorder=False):
     inp = [json.loads(i) for i in open(input_file, 'r')]
-    predictions = predict(inp, version)
+    predictions = predict(inp, version, reorder=reorder)
     with open(output_file, 'w', encoding='utf-8') as fh:
         for prediction in predictions:
             fh.write(json.dumps(prediction) + '\n')
@@ -97,13 +108,14 @@ if __name__ == '__main__':
     PROMPT_MODEL = 'google/flan-t5-large'
     QA_MODEL = 'deepset/deberta-v3-large-squad2'
     PTOKENIZER = T5Tokenizer.from_pretrained(PROMPT_MODEL, cache_dir=CACHE_DIR)
-    PMODEL = T5ForConditionalGeneration.from_pretrained(PROMPT_MODEL, cache_dir=CACHE_DIR)
+    PMODEL = T5ForConditionalGeneration.from_pretrained(PROMPT_MODEL, cache_dir=CACHE_DIR).cuda()
     QTOKENIZER = AutoTokenizer.from_pretrained(QA_MODEL, cache_dir=CACHE_DIR)
     qmodel = AutoModelForQuestionAnswering.from_pretrained(QA_MODEL, cache_dir=CACHE_DIR)
-    QMODEL = pipeline("question-answering", model=qmodel, tokenizer=QTOKENIZER)
+    QMODEL = pipeline("question-answering", model=qmodel, tokenizer=QTOKENIZER, device=0)
     SIM_MODEL = 'all-MiniLM-L6-v2'
     SIM_EMBEDDER = SentenceTransformer(SIM_MODEL, cache_folder=CACHE_DIR)
     # BERTSCORE = load("bertscore", cache_dir="/spirex/cache/")
 
     ver = 2
-    run_inference(args.input, args.output, ver)
+    use_sort = False
+    run_inference(args.input, args.output, ver, use_sort)

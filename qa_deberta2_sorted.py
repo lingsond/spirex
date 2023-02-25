@@ -116,6 +116,6 @@ if __name__ == '__main__':
     SIM_EMBEDDER = SentenceTransformer(SIM_MODEL, cache_folder=CACHE_DIR)
     # BERTSCORE = load("bertscore", cache_dir="/spirex/cache/")
 
-    ver = 0
-    use_sort = False
+    ver = 2
+    use_sort = True
     run_inference(args.input, args.output, ver, use_sort)
