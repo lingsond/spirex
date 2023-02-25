@@ -6,7 +6,7 @@ set -e
 # chmod +x docker_run.sh
 # ./docker_run.sh
 
-export NAME="ls6-stud-registry.informatik.uni-wuerzburg.de/studwangsadirdja-spirex:0.0.2"
+export NAME="ls6-stud-registry.informatik.uni-wuerzburg.de/studwangsadirdja-spirex:0.0.3"
 
 echo "Building the container..."
 fastbuildah bud -t ${NAME} --format docker -f Dockerfile .
