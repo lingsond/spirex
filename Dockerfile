@@ -11,6 +11,7 @@ RUN python3 /spirex/download_models.py
 COPY qa_deberta0.py qa_deberta1.py qa_deberta2.py input.jsonl /spirex/
 COPY qa_deberta0_sorted.py qa_deberta1_sorted.py qa_deberta2_sorted.py /spirex/
 COPY tg01.py tg01_sorted.py tg11.py tg11_sorted.py tg12.py tg12_sorted.py /spirex/
+COPY hybrid_q1tg12.py hybrid_q1tg12_sorted.py /spirex/
 
 RUN chmod -R 777 /spirex/
 

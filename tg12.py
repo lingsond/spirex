@@ -94,11 +94,14 @@ def predict(inputs, qvers, pvers, reorder=False):
             context_list = paragraphs
         question_para = para_question(question_orig, qvers)
 
-        new_context = para_context(context_list, question_orig)
+        if reorder:
+            new_context = para_context(context_list, question_orig)
+        else:
+            new_context = context_list
 
         context_str_new = '\n'.join(new_context)
 
-        if pvers == '1':
+        if pvers == 1:
             info_text, context_text, question_text, spoiler_text = get_prompt01()
         else:
             info_text, context_text, question_text, spoiler_text = get_prompt02()

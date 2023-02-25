@@ -79,6 +79,17 @@ def para_context(context, question):
     return new_corpus
 
 
+def get_qa(question_text, content, ptag):
+    tag_text = "\nAnswer type is a " + ptag
+    # context_text = content + tag_text
+    context_text = content
+    ans = QMODEL(
+        question=question_text, context=context_text,
+        max_answer_len=30, max_seq_len=512
+    )
+    return ans['answer']
+
+
 def predict(inputs, qvers, pvers, reorder=False):
     predictions = []
     for item in inputs:
@@ -95,28 +106,30 @@ def predict(inputs, qvers, pvers, reorder=False):
         question_para = para_question(question_orig, qvers)
 
         if reorder:
-            new_context = para_context(context_list, question_orig)
+            new_corpus = para_context(context_list, question_orig)
         else:
-            new_context = context_list
+            new_corpus = context_list
+        context_str_new = '\n'.join(new_corpus)
 
-        context_str_new = '\n'.join(new_context)
-
-        if pvers == 1:
-            info_text, context_text, question_text, spoiler_text = get_prompt01()
+        if tags == 'phrase' or tags == 'passage':
+            answer = get_qa(question_para, context_str_new, tags)
         else:
-            info_text, context_text, question_text, spoiler_text = get_prompt02()
+            if pvers == 1:
+                info_text, context_text, question_text, spoiler_text = get_prompt01()
+            else:
+                info_text, context_text, question_text, spoiler_text = get_prompt02()
 
-        new_context_text = context_text + context_str_new + '\n'
-        new_question_text = question_text + question_para + '\n'
-        input_text = info_text + new_question_text + new_context_text + spoiler_text
+            new_context_text = context_text + context_str_new + '\n'
+            new_question_text = question_text + question_para + '\n'
+            input_text = info_text + new_question_text + new_context_text + spoiler_text
 
-        input_ids = PTOKENIZER(input_text, return_tensors="pt", max_length=512, truncation=True).input_ids.cuda()
-        # input_ids = PTOKENIZER(input_text, return_tensors="pt").input_ids
-        outputs = PMODEL.generate(input_ids, max_new_tokens=50)
-        output_text = PTOKENIZER.decode(outputs[0])
-        # output_text = output_text.removeprefix('<pad> ')
-        # answer = output_text.removesuffix('</s>')
-        answer = output_text[6:-4]
+            input_ids = PTOKENIZER(input_text, return_tensors="pt", max_length=512, truncation=True).input_ids.cuda()
+            # input_ids = PTOKENIZER(input_text, return_tensors="pt").input_ids
+            outputs = PMODEL.generate(input_ids, max_new_tokens=50)
+            output_text = PTOKENIZER.decode(outputs[0])
+            # output_text = output_text.removeprefix('<pad> ')
+            # answer = output_text.removesuffix('</s>')
+            answer = output_text[6:-4]
 
         infer = {'uuid': uuid, 'spoiler': answer, 'spoilerType': tags}
         predictions.append(infer)
@@ -139,13 +152,17 @@ if __name__ == '__main__':
 
     # Model Initialization
     PROMPT_MODEL = 'google/flan-t5-large'
+    QA_MODEL = 'deepset/deberta-v3-large-squad2'
     PTOKENIZER = T5Tokenizer.from_pretrained(PROMPT_MODEL, cache_dir=CACHE_DIR)
     PMODEL = T5ForConditionalGeneration.from_pretrained(PROMPT_MODEL, cache_dir=CACHE_DIR).cuda()
+    QTOKENIZER = AutoTokenizer.from_pretrained(QA_MODEL, cache_dir=CACHE_DIR)
+    qmodel = AutoModelForQuestionAnswering.from_pretrained(QA_MODEL, cache_dir=CACHE_DIR)
+    QMODEL = pipeline("question-answering", model=qmodel, tokenizer=QTOKENIZER, device=0)
     SIM_MODEL = 'all-MiniLM-L6-v2'
     SIM_EMBEDDER = SentenceTransformer(SIM_MODEL, cache_folder=CACHE_DIR)
     # BERTSCORE = load("bertscore", cache_dir="/spirex/cache/")
 
     qver = 1
-    pver = 1
+    pver = 2
     use_sort = False
     run_inference(args.input, args.output, qver, pver, use_sort)

@@ -24,7 +24,7 @@ def para_question(question_text: str, version: int):
             new_text = 'Change the headline to question form. Headline: ' + question_text
         else:
             new_text = f'Rephrase as a question: {question_text}\nquestion: '
-        input_ids = PTOKENIZER(new_text, return_tensors="pt").input_ids.cuda()
+        input_ids = PTOKENIZER(new_text, return_tensors="pt").input_ids
         outputs = PMODEL.generate(input_ids, max_new_tokens=50)
         question = PTOKENIZER.decode(outputs[0])
         # question = question.removeprefix('<pad> ')
@@ -60,7 +60,7 @@ def get_prompt02():
     # context: <<context>>\n
     # question: <<question>>\n
     # answer: "
-    info_text = "Answer the following question based on the given context:\n"
+    info_text = "Answer the following question based on the given context.\n"
     context_text = "context: "
     question_text = "question: "
     spoiler_text = "answer: "
@@ -94,14 +94,11 @@ def predict(inputs, qvers, pvers, reorder=False):
             context_list = paragraphs
         question_para = para_question(question_orig, qvers)
 
-        if reorder:
-            new_context = para_context(context_list, question_orig)
-        else:
-            new_context = context_list
+        new_context = para_context(context_list, question_orig)
 
         context_str_new = '\n'.join(new_context)
 
-        if pvers == 1:
+        if pvers == '1':
             info_text, context_text, question_text, spoiler_text = get_prompt01()
         else:
             info_text, context_text, question_text, spoiler_text = get_prompt02()
@@ -110,8 +107,12 @@ def predict(inputs, qvers, pvers, reorder=False):
         new_question_text = question_text + question_para + '\n'
         input_text = info_text + new_question_text + new_context_text + spoiler_text
 
-        input_ids = PTOKENIZER(input_text, return_tensors="pt", max_length=512, truncation=True).input_ids.cuda()
+        input_ids = PTOKENIZER(input_text, return_tensors="pt", max_length=512, truncation=True).input_ids
         # input_ids = PTOKENIZER(input_text, return_tensors="pt").input_ids
+        truncated_text = PTOKENIZER.decode(input_ids[0])
+        index = truncated_text.find('context: ')
+        truncated_context = truncated_text[index+9:]
+        print(truncated_context)
         outputs = PMODEL.generate(input_ids, max_new_tokens=50)
         output_text = PTOKENIZER.decode(outputs[0])
         # output_text = output_text.removeprefix('<pad> ')
@@ -133,19 +134,17 @@ def run_inference(input_file, output_file, qversion, pversion, reorder=False):
 
 if __name__ == '__main__':
     args = parse_args()
-
-    CACHE_DIR = "/spirex/cache/"
-    # CACHE_DIR = "./cache"
+    CACHE_DIR = "./cache"
 
     # Model Initialization
     PROMPT_MODEL = 'google/flan-t5-large'
     PTOKENIZER = T5Tokenizer.from_pretrained(PROMPT_MODEL, cache_dir=CACHE_DIR)
-    PMODEL = T5ForConditionalGeneration.from_pretrained(PROMPT_MODEL, cache_dir=CACHE_DIR).cuda()
+    PMODEL = T5ForConditionalGeneration.from_pretrained(PROMPT_MODEL, cache_dir=CACHE_DIR)
     SIM_MODEL = 'all-MiniLM-L6-v2'
     SIM_EMBEDDER = SentenceTransformer(SIM_MODEL, cache_folder=CACHE_DIR)
     # BERTSCORE = load("bertscore", cache_dir="/spirex/cache/")
 
-    qver = 1
+    qver = 0
     pver = 1
     use_sort = False
     run_inference(args.input, args.output, qver, pver, use_sort)
