@@ -18,5 +18,5 @@ RUN chmod -R 777 /spirex/
 
 ENTRYPOINT [ "/spirex/qa_deberta0.py" ]
 
-# NAME=ls6-stud-registry.informatik.uni-wuerzburg.de/studwangsadirdja-spirex:0.0.3
+# NAME=ls6...-spirex:0.0.3
 # webis...:spirex:0.0.6
