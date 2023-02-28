@@ -1,6 +1,5 @@
-transformers~=4.25.1
-tqdm~=4.64.1
-evaluate~=0.4.0
-torch~=1.13.1
-sentencepiece~=0.1.97
-bert-score~=0.3.12
+docker
+transformers
+tqdm
+sentencepiece
+sentence-transformers
